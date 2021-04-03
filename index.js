@@ -8,7 +8,12 @@ app.use(bodyParser.urlencoded({
     extended: true
   }));
 
-  app.use(bodyParser.text({type: '*/*'}));
+  process.on('unhandledRejection', (reason, p) => {
+    console.log('Unhandled Rejection at: Promise', p, 'reason:', reason);
+    // application specific logging, throwing an error, or other logic here
+  });
+
+app.use(bodyParser.text({type: '*/*'}));
 require('dotenv').config()
 
 const binance = new Binance().options({
