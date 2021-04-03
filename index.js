@@ -8,7 +8,7 @@ app.use(bodyParser.urlencoded({
     extended: true
   }));
 
-  app.use(bodyParser.json());
+  app.use(bodyParser.text({type: '*/*'}));
 require('dotenv').config()
 
 const binance = new Binance().options({
@@ -17,6 +17,7 @@ const binance = new Binance().options({
 });
 
 app.post('/alert', async(req,res) => {
+    req.raw
     console.log('req.body',req.body);
     console.log('req.params',req.params);
     console.log('req.path',req.path);
