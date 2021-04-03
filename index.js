@@ -1,12 +1,26 @@
 const Binance = require('node-binance-api');
 const express = require('express')
+const bodyParser = require('body-parser')
 const app = express()
 const port = process.env.PORT || 3000 ;
+
+app.use(bodyParser.urlencoded({
+    extended: true
+  }));
+
+app.use(bodyParser.json());
+
 require('dotenv').config()
 
 const binance = new Binance().options({
   APIKEY: process.env.APIKEY,
   APISECRET: process.env.APISECRET
+});
+
+app.post('/alert', async(req,res) => {
+    console.log(req.body);
+    res.sendStatus(200);
+    res.end('OK');
 });
 
 app.get('/alert',async (req, res) =>  {
@@ -20,6 +34,7 @@ app.get('/alert',async (req, res) =>  {
         binance.prices('HOTUSDT', (error, ticker) => {
             response.canBuyAmount =  Math.floor(balance.USDT / ticker.HOTUSDT);
             response.HotPrice = ticker.HOTUSDT;
+            console.log(req);
             res.send(response);
         });
     });
