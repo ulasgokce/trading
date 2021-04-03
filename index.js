@@ -17,15 +17,47 @@ const binance = new Binance().options({
 });
 
 app.post('/alert', async(req,res) => {
-    req.raw
-    console.log('req.body',req.body);
-    console.log('req.params',req.params);
-    console.log('req.path',req.path);
-    console.log('req.query',req.query);
-    res.send('OK');
+    const pair = 'HOTUSDT';
+    if(req.body == "buy"){
+        binance.balance((error, balances) => {
+            if ( error ) return console.error(error);
+            let balance = {},response = {};
+            balance.USDT = balances.USDT.available;
+            balance.HOT = balances.HOT.available;
+            response.balance = balance;
+    
+            binance.prices(pair, (error, ticker) => {
+                response.canBuyAmount =  Math.floor(balance.USDT / ticker.HOTUSDT)*0.50;
+                response.HotPrice = ticker.HOTUSDT;
+                binance.marketBuy(pair, response.canBuyAmount);
+                res.send(response);
+            });
+        });
+
+    }else if(req.body == "sell"){
+        binance.balance((error, balances) => {
+            if ( error ) return console.error(error);
+            let balance = {},response = {};
+            balance.USDT = balances.USDT.available;
+            balance.HOT = balances.HOT.available;
+            response.balance = balance;
+    
+            binance.prices(pair, (error, ticker) => {
+                response.canSellAmount = balance.HOT;
+                response.HotPrice = ticker.HOTUSDT;
+                binance.marketSell(pair, response.canSellAmount);
+                res.send(response);
+            });
+        });
+    }else{
+
+        res.send('OK');
+    }
 });
 
 app.get('/alert',async (req, res) =>  {
+    const pair = 'HOTUSDT';
+
     binance.balance((error, balances) => {
         if ( error ) return console.error(error);
         let balance = {},response = {};
@@ -33,8 +65,8 @@ app.get('/alert',async (req, res) =>  {
         balance.HOT = balances.HOT.available;
         response.balance = balance;
 
-        binance.prices('HOTUSDT', (error, ticker) => {
-            response.canBuyAmount =  Math.floor(balance.USDT / ticker.HOTUSDT);
+        binance.prices(pair, (error, ticker) => {
+            response.canBuyAmount =  Math.floor(balance.USDT / ticker.HOTUSDT) * 0.5;
             response.HotPrice = ticker.HOTUSDT;
             res.send(response);
         });
