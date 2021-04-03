@@ -19,8 +19,7 @@ const binance = new Binance().options({
 
 app.post('/alert', async(req,res) => {
     console.log(req.body);
-    res.sendStatus(200);
-    res.end('OK');
+    res.send('OK');
 });
 
 app.get('/alert',async (req, res) =>  {
@@ -34,7 +33,6 @@ app.get('/alert',async (req, res) =>  {
         binance.prices('HOTUSDT', (error, ticker) => {
             response.canBuyAmount =  Math.floor(balance.USDT / ticker.HOTUSDT);
             response.HotPrice = ticker.HOTUSDT;
-            console.log(req);
             res.send(response);
         });
     });
