@@ -2,18 +2,34 @@ const Binance = require('node-binance-api');
 const express = require('express')
 const app = express()
 const port = process.env.PORT || 3000 ;
-
-app.get('/', (req, res) => {
-  res.send('üff!')
-})
-
-
 require('dotenv').config()
 
 const binance = new Binance().options({
   APIKEY: process.env.APIKEY,
   APISECRET: process.env.APISECRET
 });
+
+app.get('/alert',async (req, res) =>  {
+    binance.balance((error, balances) => {
+        if ( error ) return console.error(error);
+        let balance = {},response = {};
+        balance.USDT = balances.USDT.available;
+        balance.HOT = balances.HOT.available;
+        response.balance = balance;
+
+        binance.prices('HOTUSDT', (error, ticker) => {
+            response.canBuyAmount =  Math.floor(balance.USDT / ticker.HOTUSDT);
+            response.HotPrice = ticker.HOTUSDT;
+            res.send(response);
+        });
+    });
+
+
+
+})
+
+
+
 
 app.listen(port, () => {
     console.log(`Example app listening at http://localhost:${port}`)
