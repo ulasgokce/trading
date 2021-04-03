@@ -35,6 +35,7 @@ app.post('/alert', async(req,res) => {
                 response.canBuyAmount =  Math.floor(balance.USDT / ticker.HOTUSDT)*0.50;
                 response.HotPrice = ticker.HOTUSDT;
                 binance.marketBuy(pair, response.canBuyAmount);
+                console.log(response);
                 res.send(response);
             });
         });
@@ -51,6 +52,7 @@ app.post('/alert', async(req,res) => {
                 response.canSellAmount = balance.HOT;
                 response.HotPrice = ticker.HOTUSDT;
                 binance.marketSell(pair, response.canSellAmount);
+                console.log(response);
                 res.send(response);
             });
         });
