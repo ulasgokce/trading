@@ -1,15 +1,23 @@
 const Binance = require('node-binance-api');
-const express = require('express');
-const app = express();
-app.get('/', function (req,res) {
-    res.send('üfff');
+const express = require('express')
+const app = express()
+const port = process.env.PORT || 3000 ;
+
+app.get('/', (req, res) => {
+  res.send('üff!')
 })
+
+
 require('dotenv').config()
 
 const binance = new Binance().options({
   APIKEY: process.env.APIKEY,
   APISECRET: process.env.APISECRET
 });
+
+app.listen(port, () => {
+    console.log(`Example app listening at http://localhost:${port}`)
+})
 
 
 
