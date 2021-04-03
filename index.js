@@ -32,7 +32,7 @@ app.post('/alert', async(req,res) => {
             response.balance = balance;
     
             binance.prices(pair, (error, ticker) => {
-                response.canBuyAmount =  Math.floor(balance.USDT / ticker.HOTUSDT)*0.50;
+                response.canBuyAmount =  Math.floor((balance.USDT / ticker.HOTUSDT)*0.50);
                 response.HotPrice = ticker.HOTUSDT;
                 binance.marketBuy(pair, response.canBuyAmount);
                 console.log(response);
